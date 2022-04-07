@@ -1,0 +1,28 @@
+name: mswin
+on:
+  push:
+    branches:
+      - '*'
+  workflow_dispatch:
+
+jobs:
+  mswin:
+    strategy:
+      matrix:
+        vs: [2019, 2022]
+      fail-fast: false
+    runs-on: windows-${{ matrix.vs }}
+
+    steps:
+      - name: git config
+        run: |
+          git config --system core.autocrlf false
+          git config --system core.eol lf
+
+      - name: repo checkout
+        uses: actions/checkout@v3
+        run: |
+          cd C:/vcpkg
+          git remote -v
+          git pull origin
+          ./vcpkg --triplet x64-windows install libffi libyaml openssl readline zlib
